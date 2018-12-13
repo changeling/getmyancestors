@@ -34,6 +34,13 @@ import re
 from translation import translations
 
 try:
+    from num2words import num2words
+except ImportError:
+    sys.stderr.write('You need to install the num2words module first\n')
+    sys.stderr.write('(run this in your terminal: "python3 -m pip install num2words" or "python3 -m pip install --user num2words")\n')
+    exit(2)
+
+try:
     import requests
 except ImportError:
     sys.stderr.write('You need to install the requests module first\n')
@@ -102,18 +109,6 @@ def cont(string):
         res.append(('\n%s CONC ' % level).join(to_conc))
         max_len = 248
     return ('\n%s CONT ' % level).join(res)
-
-
-def ordinal(string):
-    if string[-1] == '1' and string[-2:] !=  '11':
-        suffix = _('st ')
-    elif string[-1] == '2' and string[-2:] !=  '12':
-        suffix = _('nd ')
-    elif string[-1] == '3' and string[-2:] !=  '13':
-        suffix = _('rd ')
-    else:
-        suffix = _('th ')
-    return string + suffix
 
 
 # FamilySearch session class
@@ -961,7 +956,7 @@ if __name__ == '__main__':
         if not todo:
             break
         done |= todo
-        print(_('Download ') + ordinal(str(i + 1)) + _('generation of ancestors...'))
+        print(_('Download ') + num2words(i + 1, to='ordinal_num', lang=fs.lang) + _(' generation of ancestors...'))
         todo = tree.add_parents(todo) - done
 
     # download descendants
@@ -971,7 +966,7 @@ if __name__ == '__main__':
         if not todo:
             break
         done |= todo
-        print(_('Download ') + ordinal(str(i + 1)) + _('generation of descendants...'))
+        print(_('Download ') + num2words(i + 1, to='ordinal_num', lang=fs.lang) + _(' generation of descendants...'))
         todo = tree.add_children(todo) - done
 
     # download spouses

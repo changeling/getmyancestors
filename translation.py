@@ -101,23 +101,11 @@ translations = {
     'Download starting individuals...': {
         'fr': 'Téléchargement des personnes de départ...',
     },
-    'st ': {
-        'fr': 'e ',
+    ' generation of ancestors...': {
+        'fr': ' génération d\'ancêtres...',
     },
-    'nd ': {
-        'fr': 'e ',
-    },
-    'rd ': {
-        'fr': 'e ',
-    },
-    'th ': {
-        'fr': 'e ',
-    },
-    'generation of ancestors...': {
-        'fr': 'génération d\'ancêtres...',
-    },
-    'generation of descendants...': {
-        'fr': 'génération de descendants...',
+    ' generation of descendants...': {
+        'fr': ' génération de descendants...',
     },
     'Download spouses and marriage information...': {
         'fr': 'Téléchargement des conjoints et des informations de mariage...',

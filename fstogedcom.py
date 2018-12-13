@@ -18,6 +18,12 @@ from getmyancestors import Session, Tree, Indi, Fam
 from mergemyancestors import Gedcom
 from translation import translations
 
+try:
+    from num2words import num2words
+except ImportError:
+    sys.stderr.write('You need to install the num2words module first\n')
+    sys.stderr.write('(run this in your terminal: "python3 -m pip install num2words" or "python3 -m pip install --user num2words")\n')
+    exit(2)
 
 tmp_dir = os.path.join(tempfile.gettempdir(), 'fstogedcom')
 global cache
@@ -29,18 +35,6 @@ def _(string):
     if string in translations and lang in translations[string]:
         return translations[string][lang]
     return string
-
-
-def ordinal(string):
-    if string[-1] == '1' and string[-2:] !=  '11':
-        suffix = _('st ')
-    elif string[-1] == '2' and string[-2:] !=  '12':
-        suffix = _('nd ')
-    elif string[-1] == '3' and string[-2:] !=  '13':
-        suffix = _('rd ')
-    else:
-        suffix = _('th ')
-    return string + suffix
 
 
 # Entry widget with right-clic menu to copy/cut/paste
@@ -438,7 +432,7 @@ class Download(Frame):
             if not todo:
                 break
             done |= todo
-            self.info(_('Download ') + ordinal(str(i + 1)) + _('generation of ancestors...'))
+            self.info(_('Download ') + num2words(i + 1, to='ordinal_num', lang=lang) + _(' generation of ancestors...'))
             todo = self.tree.add_parents(todo) - done
 
         todo = set(self.tree.indi.keys())
@@ -447,7 +441,7 @@ class Download(Frame):
             if not todo:
                 break
             done |= todo
-            self.info(_('Download ') + ordinal(str(i + 1)) + _('generation of descendants...'))
+            self.info(_('Download ') + num2words(i + 1, to='ordinal_num', lang=lang) + _(' generation of descendants...'))
             todo = self.tree.add_children(todo) - done
 
         if self.options.spouses.get():
