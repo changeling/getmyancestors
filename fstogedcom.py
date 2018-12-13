@@ -31,6 +31,18 @@ def _(string):
     return string
 
 
+def ordinal(string):
+    if string[-1] == '1' and string[-2:] !=  '11':
+        suffix = _('st ')
+    elif string[-1] == '2' and string[-2:] !=  '12':
+        suffix = _('nd ')
+    elif string[-1] == '3' and string[-2:] !=  '13':
+        suffix = _('rd ')
+    else:
+        suffix = _('th ')
+    return string + suffix
+
+
 # Entry widget with right-clic menu to copy/cut/paste
 class EntryWithMenu(Entry):
     def __init__(self, master, **kw):
@@ -426,7 +438,7 @@ class Download(Frame):
             if not todo:
                 break
             done |= todo
-            self.info(_('Download ') + str(i + 1) + _('th generation of ancestors...'))
+            self.info(_('Download ') + ordinal(str(i + 1)) + _('generation of ancestors...'))
             todo = self.tree.add_parents(todo) - done
 
         todo = set(self.tree.indi.keys())
@@ -435,7 +447,7 @@ class Download(Frame):
             if not todo:
                 break
             done |= todo
-            self.info(_('Download ') + str(i + 1) + _('th generation of descendants...'))
+            self.info(_('Download ') + ordinal(str(i + 1)) + _('generation of descendants...'))
             todo = self.tree.add_children(todo) - done
 
         if self.options.spouses.get():

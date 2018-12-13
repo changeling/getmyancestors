@@ -104,6 +104,18 @@ def cont(string):
     return ('\n%s CONT ' % level).join(res)
 
 
+def ordinal(string):
+    if string[-1] == '1' and string[-2:] !=  '11':
+        suffix = _('st ')
+    elif string[-1] == '2' and string[-2:] !=  '12':
+        suffix = _('nd ')
+    elif string[-1] == '3' and string[-2:] !=  '13':
+        suffix = _('rd ')
+    else:
+        suffix = _('th ')
+    return string + suffix
+
+
 # FamilySearch session class
 class Session:
     def __init__(self, username, password, verbose=False, logfile=sys.stderr, timeout=60):
@@ -949,7 +961,7 @@ if __name__ == '__main__':
         if not todo:
             break
         done |= todo
-        print(_('Download ') + str(i + 1) + _('th generation of ancestors...'))
+        print(_('Download ') + ordinal(str(i + 1)) + _('generation of ancestors...'))
         todo = tree.add_parents(todo) - done
 
     # download descendants
@@ -959,7 +971,7 @@ if __name__ == '__main__':
         if not todo:
             break
         done |= todo
-        print(_('Download ') + str(i + 1) + _('th generation of descendants...'))
+        print(_('Download ') + ordinal(str(i + 1)) + _('generation of descendants...'))
         todo = tree.add_children(todo) - done
 
     # download spouses
