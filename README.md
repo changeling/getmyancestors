@@ -5,7 +5,17 @@ getmyancestors.py is a python3 script that downloads family trees in GEDCOM form
 
 This program is now in production phase, but bugs might still be present. Features will be added on request. It is provided as is.
 
-This script requires python3 and the requests module to work. To install this module on Linux, run in your terminal: "python3 -m pip install requests" (or "python3 -m pip install --user requests" if you don't have admin rights on your machine).
+The project is maintained at https://github.com/Linekio/getmyancestors. Visit here for the latest version and more information.
+
+This script requires python3, the requests module, and the num2words to work. To install the modules, run in your terminal:
+
+For requests:
+
+"python3 -m pip install requests" (or "python3 -m pip install --user requests" if you don't have admin rights on your machine).
+
+For num2words:
+
+"python3 -m pip install num2words" (or "python3 -m pip install --user num2words" if you don't have admin rights on your machine).
 
 This script requires python 3.4 (or higher) to run due to some novel features in the argparse and asyncio modules (https://docs.python.org/3/whatsnew/3.4.html)
 
@@ -71,7 +81,7 @@ python3 getmyancestors.py -c -u username -p password -i LF7T-Y4C -o out.ged
 Support
 =======
 
-Send questions, suggestions, or feature requests to benoitfontaine.ba@gmail.com or giulio.genovese@gmail.com
+Send questions, suggestions, or feature requests to benoitfontaine.ba@gmail.com or giulio.genovese@gmail.com, or open an Issue at https://github.com/Linekio/getmyancestors/issues
 
 Donation
 ========
