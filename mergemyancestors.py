@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-   mergemyancestors.py - Merge GEDCOM data from FamilySearch Tree
-   Copyright (C) 2014-2016 Giulio Genovese (giulio.genovese@gmail.com)
+mergemyancestors.py - Merge GEDCOM data from FamilySearch Tree.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+Copyright (C) 2014-2016 Giulio Genovese (giulio.genovese@gmail.com)
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-   Written by Giulio Genovese <giulio.genovese@gmail.com>
-   and by Benoît Fontaine <benoitfontaine.ba@gmail.com>
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Written by Giulio Genovese <giulio.genovese@gmail.com>
+and by Benoît Fontaine <benoitfontaine.ba@gmail.com>
 """
 
 from __future__ import print_function
@@ -29,12 +30,22 @@ import sys
 import argparse
 
 # local import
-from getmyancestors import *
+from getmyancestors import FACT_TAGS, ORDINANCES_STATUS, Indi, Fam, Note
+from getmyancestors import Source, Name, Fact, Memorie, Ordinance, Tree
 
 sys.path.append(os.path.dirname(sys.argv[0]))
 
 
 def reversed_dict(d):
+    """[summary].
+
+    Arguments:
+        d {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+
+    """
     return {val: key for key, val in d.items()}
 
 
@@ -43,8 +54,21 @@ ORDINANCES = reversed_dict(ORDINANCES_STATUS)
 
 
 class Gedcom:
+    """[summary].
+
+    Returns:
+        [type] -- [description]
+
+    """
 
     def __init__(self, file, tree):
+        """[summary].
+
+        Arguments:
+            file {[type]} -- [description]
+            tree {[type]} -- [description]
+
+        """
         self.f = file
         self.num = None
         self.tree = tree
@@ -111,7 +135,8 @@ class Gedcom:
             elif self.tag == 'SEX':
                 self.indi[self.num].gender = self.data
             elif self.tag in FACT_TYPES or self.tag == 'EVEN':
-                self.indi[self.num].facts.add(self.__get_fact())
+                self.indi[self.num].facts.add(
+                    self.__get_fact())
             elif self.tag == 'BAPL':
                 self.indi[self.num].baptism = self.__get_ordinance()
             elif self.tag == 'CONL':
@@ -121,43 +146,55 @@ class Gedcom:
             elif self.tag == 'SLGC':
                 self.indi[self.num].sealing_child = self.__get_ordinance()
             elif self.tag == 'FAMS':
-                self.indi[self.num].fams_num.add(int(self.data[2:len(self.data) - 1]))
+                self.indi[self.num].fams_num.add(
+                    int(self.data[2:len(self.data) - 1]))
             elif self.tag == 'FAMC':
-                self.indi[self.num].famc_num.add(int(self.data[2:len(self.data) - 1]))
+                self.indi[self.num].famc_num.add(
+                    int(self.data[2:len(self.data) - 1]))
             elif self.tag == '_FSFTID':
                 self.indi[self.num].fid = self.data
             elif self.tag == 'NOTE':
                 num = int(self.data[2:len(self.data) - 1])
                 if num not in self.note:
                     self.note[num] = Note(tree=self.tree, num=num)
-                self.indi[self.num].notes.add(self.note[num])
+                self.indi[self.num].notes.add(
+                    self.note[num])
             elif self.tag == 'SOUR':
-                self.indi[self.num].sources.add(self.__get_link_source())
+                self.indi[self.num].sources.add(
+                    self.__get_link_source())
             elif self.tag == 'OBJE':
-                self.indi[self.num].memories.add(self.__get_memorie())
+                self.indi[self.num].memories.add(
+                    self.__get_memorie())
         self.flag = True
 
     def __get_fam(self):
         while self.__get_line() and self.level > 0:
             if self.tag == 'HUSB':
-                self.fam[self.num].husb_num = int(self.data[2:len(self.data) - 1])
+                self.fam[self.num].husb_num = int(
+                    self.data[2:len(self.data) - 1])
             elif self.tag == 'WIFE':
-                self.fam[self.num].wife_num = int(self.data[2:len(self.data) - 1])
+                self.fam[self.num].wife_num = int(
+                    self.data[2:len(self.data) - 1])
             elif self.tag == 'CHIL':
-                self.fam[self.num].chil_num.add(int(self.data[2:len(self.data) - 1]))
+                self.fam[self.num].chil_num.add(
+                    int(self.data[2:len(self.data) - 1]))
             elif self.tag in FACT_TYPES:
-                self.fam[self.num].facts.add(self.__get_fact())
+                self.fam[self.num].facts.add(
+                    self.__get_fact())
             elif self.tag == 'SLGS':
                 self.fam[self.num].sealing_spouse = self.__get_ordinance()
             elif self.tag == '_FSFTID':
                 self.fam[self.num].fid = self.data
             elif self.tag == 'NOTE':
-                num = int(self.data[2:len(self.data) - 1])
+                num = int(
+                    self.data[2:len(self.data) - 1])
                 if num not in self.note:
                     self.note[num] = Note(tree=self.tree, num=num)
-                self.fam[self.num].notes.add(self.note[num])
+                self.fam[self.num].notes.add(
+                    self.note[num])
             elif self.tag == 'SOUR':
-                self.fam[self.num].sources.add(self.__get_link_source())
+                self.fam[self.num].sources.add(
+                    self.__get_link_source())
         self.flag = True
 
     def __get_name(self):
@@ -176,22 +213,26 @@ class Gedcom:
                 name.prefix = self.data
             elif self.tag == 'TYPE':
                 if self.data == 'aka':
-                    self.indi[self.num].aka.add(name)
+                    self.indi[self.num].aka.add(
+                        name)
                     added = True
                 elif self.data == 'married':
-                    self.indi[self.num].married.add(name)
+                    self.indi[self.num].married.add(
+                        name)
                     added = True
             elif self.tag == 'NICK':
                 nick = Name()
                 nick.given = self.data
-                self.indi[self.num].nicknames.add(nick)
+                self.indi[self.num].nicknames.add(
+                    nick)
             elif self.tag == 'NOTE':
                 num = int(self.data[2:len(self.data) - 1])
                 if num not in self.note:
                     self.note[num] = Note(tree=self.tree, num=num)
                 name.note = self.note[num]
         if not added:
-            self.indi[self.num].birthnames.add(name)
+            self.indi[self.num].birthnames.add(
+                name)
         self.flag = True
 
     def __get_fact(self):
@@ -264,7 +305,8 @@ class Gedcom:
                 num = int(self.data[2:len(self.data) - 1])
                 if num not in self.note:
                     self.note[num] = Note(tree=self.tree, num=num)
-                self.sour[self.num].notes.add(self.note[num])
+                self.sour[self.num].notes.add(
+                    self.note[num])
         self.flag = True
 
     def __get_link_source(self):
@@ -316,22 +358,42 @@ class Gedcom:
             if self.fam[num].wife_num:
                 self.fam[num].wife_fid = self.indi[self.fam[num].wife_num].fid
             for chil in self.fam[num].chil_num:
-                self.fam[num].chil_fid.add(self.indi[chil].fid)
+                self.fam[num].chil_fid.add(
+                    self.indi[chil].fid)
         for num in self.indi:
             for famc in self.indi[num].famc_num:
-                self.indi[num].famc_fid.add((self.fam[famc].husb_fid, self.fam[famc].wife_fid))
+                self.indi[num].famc_fid.add(
+                    (self.fam[famc].husb_fid, self.fam[famc].wife_fid))
             for fams in self.indi[num].fams_num:
-                self.indi[num].fams_fid.add((self.fam[fams].husb_fid, self.fam[fams].wife_fid))
+                self.indi[num].fams_fid.add(
+                    (self.fam[fams].husb_fid, self.fam[fams].wife_fid))
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Merge GEDCOM data from FamilySearch Tree (4 Jul 2016)', add_help=False, usage='mergemyancestors.py -i input1.ged input2.ged ... [options]')
+    parser = argparse.ArgumentParser(
+        description='Merge GEDCOM data from FamilySearch Tree (4 Jul 2016)',
+        add_help=False,
+        usage='mergemyancestors.py -i input1.ged input2.ged ... [options]')
     try:
-        parser.add_argument('-i', metavar='<FILE>', nargs='+', type=argparse.FileType('r', encoding='UTF-8'), default=sys.stdin, help='input GEDCOM files [stdin]')
-        parser.add_argument('-o', metavar='<FILE>', nargs='?', type=argparse.FileType('w', encoding='UTF-8'), default=sys.stdout, help='output GEDCOM files [stdout]')
+        parser.add_argument(
+            '-i',
+            metavar='<FILE>',
+            nargs='+',
+            type=argparse.FileType('r', encoding='UTF-8'),
+            default=sys.stdin,
+            help='input GEDCOM files [stdin]')
+        parser.add_argument(
+            '-o',
+            metavar='<FILE>',
+            nargs='?',
+            type=argparse.FileType('w', encoding='UTF-8'),
+            default=sys.stdout,
+            help='output GEDCOM files [stdout]')
     except TypeError:
-        sys.stderr.write('Python >= 3.4 is required to run this script\n')
-        sys.stderr.write('(see https://docs.python.org/3/whatsnew/3.4.html#argparse)\n')
+        sys.stderr.write(
+            'Python >= 3.4 is required to run this script\n')
+        sys.stderr.write(
+            '(see https://docs.python.org/3/whatsnew/3.4.html#argparse)\n')
         exit(2)
 
     # extract arguments from the command line
@@ -374,7 +436,9 @@ if __name__ == '__main__':
             tree.indi[fid].baptism = ged.indi[num].baptism
             tree.indi[fid].confirmation = ged.indi[num].confirmation
             tree.indi[fid].endowment = ged.indi[num].endowment
-            if not (tree.indi[fid].sealing_child and tree.indi[fid].sealing_child.famc):
+            if not (
+                tree.indi[fid].sealing_child and
+                    tree.indi[fid].sealing_child.famc):
                 tree.indi[fid].sealing_child = ged.indi[num].sealing_child
 
         # add informations about families
