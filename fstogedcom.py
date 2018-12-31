@@ -1,9 +1,33 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+fstogedcom.py - GUI for retrieving GEDCOM data from FamilySearch Tree.
+
+Copyright (C) 2014-2016 Giulio Genovese (giulio.genovese@gmail.com)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Written by Giulio Genovese <giulio.genovese@gmail.com>
+and by Benoît Fontaine <benoitfontaine.ba@gmail.com>
+"""
+
 
 # global import
-from tkinter import Tk, StringVar, IntVar, filedialog, messagebox, Menu, TclError, PhotoImage
-from tkinter.ttk import Frame, Label, Entry, Button, Checkbutton, Treeview, Notebook
+from tkinter import Tk, StringVar, IntVar, filedialog, messagebox, Menu
+from tkinter import TclError, PhotoImage
+from tkinter.ttk import Frame, Label, Entry, Button, Checkbutton
+from tkinter.ttk import Treeview, Notebook
 from threading import Thread
 from diskcache import Cache
 import time
@@ -26,6 +50,16 @@ lang = cache.get('lang')
 
 
 def _(string):
+    """
+    [summary].
+
+    Arguments:
+        string {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+
+    """
     if string in translations and lang in translations[string]:
         return translations[string][lang]
     return string
@@ -33,11 +67,30 @@ def _(string):
 
 # Entry widget with right-clic menu to copy/cut/paste
 class EntryWithMenu(Entry):
+    """
+    [summary].
+
+    Arguments:
+        Entry {[type]} -- [description]
+    """
+
     def __init__(self, master, **kw):
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+        """
         super(EntryWithMenu, self).__init__(master, **kw)
         self.bind('<Button-3>', self.click_right)
 
     def click_right(self, event):
+        """
+        [summary].
+
+        Arguments:
+            event {[type]} -- [description]
+        """
         menu = Menu(self, tearoff=0)
         try:
             self.selection_get()
@@ -50,15 +103,18 @@ class EntryWithMenu(Entry):
         menu.post(event.x_root, event.y_root)
 
     def copy(self):
+        """[summary]."""
         self.clipboard_clear()
         text = self.selection_get()
         self.clipboard_append(text)
 
     def cut(self):
+        """[summary]."""
         self.copy()
         self.delete('sel.first', 'sel.last')
 
     def paste(self):
+        """[summary]."""
         try:
             text = self.selection_get(selection='CLIPBOARD')
             self.insert('insert', text)
@@ -68,14 +124,37 @@ class EntryWithMenu(Entry):
 
 # List of files to merge
 class FilesToMerge(Treeview):
+    """
+    [summary].
+
+    Arguments:
+        Treeview {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+
+    """
+
     def __init__(self, master, **kwargs):
-        super(FilesToMerge, self).__init__(master, selectmode='extended', height=5, **kwargs)
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+        """
+        super(FilesToMerge, self).__init__(
+            master, selectmode='extended', height=5, **kwargs)
         self.heading('#0', text=_('Files'))
         self.column('#0', width=300)
         self.files = dict()
         self.bind('<Button-3>', self.popup)
 
     def add_file(self, filename):
+        """[summary].
+
+        Arguments:
+            filename {[type]} -- [description]
+        """
         if any(f.name == filename for f in self.files.values()):
             messagebox.showinfo(_('Error'), message=_('File already exist: ') + os.path.basename(filename))
             return
@@ -87,6 +166,12 @@ class FilesToMerge(Treeview):
         self.files[new_id] = file
 
     def popup(self, event):
+        """
+        [summary].
+
+        Arguments:
+            event {[type]} -- [description]
+        """
         item = self.identify_row(event.y)
         if item:
             menu = Menu(self, tearoff=0)
@@ -94,6 +179,16 @@ class FilesToMerge(Treeview):
             menu.post(event.x_root, event.y_root)
 
     def delete_item(self, item):
+        """
+        [summary].
+
+        Arguments:
+            item {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+
+        """
         def delete():
             self.files[item].close()
             self.files.pop(item)
@@ -103,8 +198,20 @@ class FilesToMerge(Treeview):
 
 # Merge widget
 class Merge(Frame):
+    """
+    [summary].
+
+    Arguments:
+        Frame {[type]} -- [description]
+    """
 
     def __init__(self, master, **kwargs):
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+        """
         super(Merge, self).__init__(master, **kwargs)
         warning = Label(self, font=('a', 7), wraplength=300, justify='center', text=_('Warning: This tool should only be used to merge GEDCOM files from this software. If you use other GEDCOM files, the result is not guaranteed.'))
         self.files_to_merge = FilesToMerge(self)
@@ -120,10 +227,15 @@ class Merge(Frame):
         buttons.pack(side='bottom')
 
     def add_files(self):
-        for filename in filedialog.askopenfilenames(title=_('Open'), defaultextension='.ged', filetypes=(('GEDCOM', '.ged'), (_('All files'), '*.*'))):
+        """[summary]."""
+        for filename in filedialog.askopenfilenames(
+                title=_('Open'),
+                defaultextension='.ged',
+                filetypes=(('GEDCOM', '.ged'), (_('All files'), '*.*'))):
             self.files_to_merge.add_file(filename)
 
     def save(self):
+        """[summary]."""
         if not self.files_to_merge.files:
             messagebox.showinfo(_('Error'), message=_('Please add GEDCOM files'))
             return
@@ -197,14 +309,27 @@ class Merge(Frame):
 
     # prevent exception on quit during download
     def quit(self):
+        """[summary]."""
         super(Merge, self).quit()
         os._exit(1)
 
 
 # Sign In widget
 class SignIn(Frame):
+    """
+    [summary].
+
+    Arguments:
+        Frame {[type]} -- [description]
+    """
 
     def __init__(self, master, **kwargs):
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+        """
         super(SignIn, self).__init__(master, **kwargs)
         self.username = StringVar()
         self.password = StringVar()
@@ -221,22 +346,65 @@ class SignIn(Frame):
         entry_password.bind('<Key>', self.enter)
 
     def enter(self, evt):
+        """[summary].
+
+        Arguments:
+            evt {[type]} -- [description]
+        """
         if evt.keysym in {'Return', 'KP_Enter'}:
             self.master.master.command_in_thread(self.master.master.login)()
 
 
 # List of starting individuals
 class StartIndis(Treeview):
+    """
+    [summary].
+
+    Arguments:
+        Treeview {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+
+    """
+
     def __init__(self, master, **kwargs):
-        super(StartIndis, self).__init__(master, selectmode='extended', height=5, columns=('fid',), **kwargs)
-        self.heading('#0', text=_('Name'))
-        self.column('#0', width=250)
-        self.column('fid', width=80)
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+        """
+        super(StartIndis, self).__init__(
+            master,
+            selectmode='extended',
+            height=5,
+            columns=('fid',),
+            **kwargs)
+        self.heading(
+            '#0',
+            text=_('Name'))
+        self.column(
+            '#0',
+            width=250)
+        self.column(
+            'fid',
+            width=80)
         self.indis = dict()
         self.heading('fid', text='Id')
         self.bind('<Button-3>', self.popup)
 
     def add_indi(self, fid):
+        """
+        [summary].
+
+        Arguments:
+            fid {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+
+        """
         if not fid:
             return
         if fid in self.indis.values():
@@ -256,6 +424,12 @@ class StartIndis(Treeview):
         messagebox.showinfo(_('Error'), message=_('Individual not found'))
 
     def popup(self, event):
+        """
+        [summary].
+
+        Arguments:
+            event {[type]} -- [description]
+        """
         item = self.identify_row(event.y)
         if item:
             menu = Menu(self, tearoff=0)
@@ -263,6 +437,16 @@ class StartIndis(Treeview):
             menu.post(event.x_root, event.y_root)
 
     def delete_item(self, item):
+        """
+        [summary].
+
+        Arguments:
+            item {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+
+        """
         def delete():
             self.indis.pop(item)
             self.delete(item)
@@ -271,7 +455,23 @@ class StartIndis(Treeview):
 
 # Options form
 class Options(Frame):
+    """
+    [summary].
+
+    Arguments:
+        Frame {[type]} -- [description]
+    """
+
     def __init__(self, master, ordinances=False, **kwargs):
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+
+        Keyword Arguments:
+            ordinances {bool} -- [description] (default: {False})
+        """
         super(Options, self).__init__(master, **kwargs)
         self.ancestors = IntVar()
         self.ancestors.set(4)
@@ -307,17 +507,41 @@ class Options(Frame):
         entry_ancestors.focus_set()
 
     def add_indi(self):
+        """[summary]."""
         if self.start_indis.add_indi(self.fid.get()):
             self.fid.set('')
 
     def enter(self, evt):
+        """
+        [summary].
+
+        Arguments:
+            evt {[type]} -- [description]
+        """
         if evt.keysym in {'Return', 'KP_Enter'}:
             self.add_indi()
 
 
 # Main widget
 class Download(Frame):
+    """
+    [summary].
+
+    Arguments:
+        Frame {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+
+    """
+
     def __init__(self, master, **kwargs):
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+        """
         super(Download, self).__init__(master, borderwidth=20, **kwargs)
         self.fs = None
         self.tree = None
@@ -358,9 +582,16 @@ class Download(Frame):
         self.update_needed = False
 
     def info(self, text):
+        """
+        [summary].
+
+        Arguments:
+            text {[type]} -- [description]
+        """
         self.info_label.config(text=text)
 
     def save(self):
+        """[summary]."""
         filename = filedialog.asksaveasfilename(title=_('Save as'), defaultextension='.ged', filetypes=(('GEDCOM', '.ged'), (_('All files'), '*.*')))
         if not filename:
             return
@@ -368,6 +599,7 @@ class Download(Frame):
             self.tree.print(file)
 
     def login(self):
+        """[summary]."""
         global _
         username = self.sign_in.username.get()
         password = self.sign_in.password.get()
@@ -399,6 +631,7 @@ class Download(Frame):
         self.update_needed = False
 
     def quit(self):
+        """[summary]."""
         self.update_needed = False
         if self.logfile:
             self.logfile.close()
@@ -407,6 +640,7 @@ class Download(Frame):
         os._exit(1)
 
     def download(self):
+        """[summary]."""
         todo = [self.options.start_indis.indis[key] for key in sorted(self.options.start_indis.indis)]
         for fid in todo:
             if not re.match(r'[A-Z0-9]{4}-[A-Z0-9]{3}', fid):
@@ -471,6 +705,15 @@ class Download(Frame):
         self.update_needed = False
 
     def command_in_thread(self, func):
+        """[summary].
+
+        Arguments:
+            func {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+
+        """
         def res():
             self.update_needed = True
             Thread(target=self.update_gui).start()
@@ -478,6 +721,7 @@ class Download(Frame):
         return res
 
     def update_info_tree(self):
+        """[summary]."""
         if self.info_tree and self.start_time and self.tree:
             self.info_indis.config(text=_('Individuals: %s') % len(self.tree.indi))
             self.info_fams.config(text=_('Families: %s') % len(self.tree.fam))
@@ -489,6 +733,7 @@ class Download(Frame):
             self.time.config(text=_('Elapsed time: %s:%s') % (minutes, '00%s'[len(str(seconds)):] % seconds))
 
     def update_gui(self):
+        """[summary]."""
         while self.update_needed:
             self.update_info_tree()
             self.master.update()
@@ -496,7 +741,20 @@ class Download(Frame):
 
 
 class FStoGEDCOM(Notebook):
+    """
+    [summary].
+
+    Arguments:
+        Notebook {[type]} -- [description]
+    """
+
     def __init__(self, master, **kwargs):
+        """
+        [summary].
+
+        Arguments:
+            master {[type]} -- [description]
+        """
         super(FStoGEDCOM, self).__init__(master, width=400, **kwargs)
         self.download = Download(self)
         self.merge = Merge(self)
@@ -505,6 +763,7 @@ class FStoGEDCOM(Notebook):
         self.pack()
 
     def change_lang(self):
+        """[summary]."""
         self.tab(self.index(self.download), text=_('Download GEDCOM'))
         self.tab(self.index(self.merge), text=_('Merge GEDCOMs'))
         self.download.btn_quit.config(text=_('Quit'))
