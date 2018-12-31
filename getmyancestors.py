@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-   getmyancestors.py - Retrieve GEDCOM data from FamilySearch Tree
-   Copyright (C) 2014-2016 Giulio Genovese (giulio.genovese@gmail.com)
+getmyancestors.py - Retrieve GEDCOM data from FamilySearch Tree.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+Copyright (C) 2014-2016 Giulio Genovese (giulio.genovese@gmail.com)
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-   Written by Giulio Genovese <giulio.genovese@gmail.com>
-   and by Benoît Fontaine <benoitfontaine.ba@gmail.com>
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Written by Giulio Genovese <giulio.genovese@gmail.com>
+and by Benoît Fontaine <benoitfontaine.ba@gmail.com>
 """
 
 # global import
@@ -36,18 +37,26 @@ from translation import translations
 try:
     from num2words import num2words
 except ImportError:
-    sys.stderr.write('You need to install the num2words module first\n')
-    sys.stderr.write('(run this in your terminal: "python3 -m pip install num2words" or "python3 -m pip install --user num2words")\n')
+    sys.stderr.write('You need to install the num2words module first.\n')
+    sys.stderr.write('In your terminal, run:\n')
+    sys.stderr.write('python3 -m pip install num2words\n')
+    sys.stderr.write('or:\n')
+    sys.stderr.write('python3 -m pip install --user num2words')
     exit(2)
 
 try:
     import requests
 except ImportError:
-    sys.stderr.write('You need to install the requests module first\n')
-    sys.stderr.write('(run this in your terminal: "python3 -m pip install requests" or "python3 -m pip install --user requests")\n')
+    sys.stderr.write('You need to install the requests module first.\n')
+    sys.stderr.write('In your terminal, run:\n')
+    sys.stderr.write('python3 -m pip install requests\n')
+    sys.stderr.write('or:\n')
+    sys.stderr.write('python3 -m pip install --user requests')
     exit(2)
 
-MAX_PERSONS = 200  # is subject to change: see https://www.familysearch.org/developers/docs/api/tree/Persons_resource
+# MAX_PERSONS is subject to change.
+# See https://www.familysearch.org/developers/docs/api/tree/Persons_resource
+MAX_PERSONS = 200
 
 FACT_TAGS = {
     'http://gedcomx.org/Birth': 'BIRT',
@@ -891,23 +900,82 @@ class Tree:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Retrieve GEDCOM data from FamilySearch Tree (4 Jul 2016)', add_help=False, usage='getmyancestors.py -u username -p password [options]')
-    parser.add_argument('-u', metavar='<STR>', type=str, help='FamilySearch username')
-    parser.add_argument('-p', metavar='<STR>', type=str, help='FamilySearch password')
-    parser.add_argument('-i', metavar='<STR>', nargs='+', type=str, help='List of individual FamilySearch IDs for whom to retrieve ancestors')
-    parser.add_argument('-a', metavar='<INT>', type=int, default=4, help='Number of generations to ascend [4]')
-    parser.add_argument('-d', metavar='<INT>', type=int, default=0, help='Number of generations to descend [0]')
-    parser.add_argument('-m', action="store_true", default=False, help='Add spouses and couples information [False]')
-    parser.add_argument('-r', action="store_true", default=False, help='Add list of contributors in notes [False]')
-    parser.add_argument('-c', action="store_true", default=False, help='Add LDS ordinances (need LDS account) [False]')
-    parser.add_argument("-v", action="store_true", default=False, help="Increase output verbosity [False]")
-    parser.add_argument('-t', metavar='<INT>', type=int, default=60, help='Timeout in seconds [60]')
+    parser = argparse.ArgumentParser(
+        description='Retrieve GEDCOM data from FamilySearch Tree (4 Jul 2016)',
+        add_help=False,
+        usage='getmyancestors.py -u username -p password [options]')
+    parser.add_argument(
+        '-u',
+        metavar='<STR>',
+        type=str,
+        help='FamilySearch username')
+    parser.add_argument(
+        '-p',
+        metavar='<STR>',
+        type=str,
+        help='FamilySearch password')
+    parser.add_argument(
+        '-i',
+        metavar='<STR>',
+        nargs='+',
+        type=str,
+        help='List of individual FamilySearch IDs for whom to retrieve ancestors')
+    parser.add_argument(
+        '-a',
+        metavar='<INT>',
+        type=int,
+        default=4,
+        help='Number of generations to ascend [4]')
+    parser.add_argument(
+        '-d',
+        metavar='<INT>',
+        type=int,
+        default=0,
+        help='Number of generations to descend [0]')
+    parser.add_argument(
+        '-m',
+        action="store_true",
+        default=False,
+        help='Add spouses and couples information [False]')
+    parser.add_argument(
+        '-r',
+        action="store_true",
+        default=False,
+        help='Add list of contributors in notes [False]')
+    parser.add_argument(
+        '-c',
+        action="store_true",
+        default=False,
+        help='Add LDS ordinances (need LDS account) [False]')
+    parser.add_argument(
+        "-v",
+        action="store_true",
+        default=False,
+        help="Increase output verbosity [False]")
+    parser.add_argument(
+        '-t',
+        metavar='<INT>',
+        type=int,
+        default=60,
+        help='Timeout in seconds [60]')
     try:
-        parser.add_argument('-o', metavar='<FILE>', type=argparse.FileType('w', encoding='UTF-8'), default=sys.stdout, help='output GEDCOM file [stdout]')
-        parser.add_argument('-l', metavar='<FILE>', type=argparse.FileType('w', encoding='UTF-8'), default=sys.stderr, help='output log file [stderr]')
+        parser.add_argument(
+            '-o',
+            metavar='<FILE>',
+            type=argparse.FileType('w', encoding='UTF-8'),
+            default=sys.stdout,
+            help='output GEDCOM file [stdout]')
+        parser.add_argument(
+            '-l',
+            metavar='<FILE>',
+            type=argparse.FileType('w', encoding='UTF-8'),
+            default=sys.stderr,
+            help='output log file [stderr]')
     except TypeError:
-        sys.stderr.write('Python >= 3.4 is required to run this script\n')
-        sys.stderr.write('(see https://docs.python.org/3/whatsnew/3.4.html#argparse)\n')
+        sys.stderr.write(
+            'Python >= 3.4 is required to run this script\n')
+        sys.stderr.write(
+            '(see https://docs.python.org/3/whatsnew/3.4.html#argparse)\n')
         exit(2)
 
     # extract arguments from the command line
@@ -923,8 +991,10 @@ if __name__ == '__main__':
             if not re.match(r'[A-Z0-9]{4}-[A-Z0-9]{3}', fid):
                 exit('Invalid FamilySearch ID: ' + fid)
 
-    username = args.u if args.u else input("Enter FamilySearch username: ")
-    password = args.p if args.p else getpass.getpass("Enter FamilySearch password: ")
+    username = args.u if args.u else input(
+        "Enter FamilySearch username: ")
+    password = args.p if args.p else getpass.getpass(
+        "Enter FamilySearch password: ")
 
     time_count = time.time()
 
@@ -975,15 +1045,20 @@ if __name__ == '__main__':
     async def download_stuff(loop):
         futures = set()
         for fid, indi in tree.indi.items():
-            futures.add(loop.run_in_executor(None, indi.get_notes))
+            futures.add(
+                loop.run_in_executor(None, indi.get_notes))
             if args.c:
-                futures.add(loop.run_in_executor(None, tree.add_ordinances, fid))
+                futures.add(
+                    loop.run_in_executor(None, tree.add_ordinances, fid))
             if args.r:
-                futures.add(loop.run_in_executor(None, indi.get_contributors))
+                futures.add(
+                    loop.run_in_executor(None, indi.get_contributors))
         for fam in tree.fam.values():
-            futures.add(loop.run_in_executor(None, fam.get_notes))
+            futures.add(
+                loop.run_in_executor(None, fam.get_notes))
             if args.r:
-                futures.add(loop.run_in_executor(None, fam.get_contributors))
+                futures.add(
+                    loop.run_in_executor(None, fam.get_contributors))
         for future in futures:
             await future
 
