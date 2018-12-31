@@ -21,8 +21,11 @@ from translation import translations
 try:
     from num2words import num2words
 except ImportError:
-    sys.stderr.write('You need to install the num2words module first\n')
-    sys.stderr.write('(run this in your terminal: "python3 -m pip install num2words" or "python3 -m pip install --user num2words")\n')
+    sys.stderr.write('You need to install the num2words module first.\n')
+    sys.stderr.write('In your terminal, run:\n')
+    sys.stderr.write('python3 -m pip install num2words\n')
+    sys.stderr.write('or:\n')
+    sys.stderr.write('python3 -m pip install --user num2words')
     exit(2)
 
 tmp_dir = os.path.join(tempfile.gettempdir(), 'fstogedcom')
