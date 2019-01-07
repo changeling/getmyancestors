@@ -865,8 +865,12 @@ class Tree:
         file.write('0 HEAD\n')
         file.write('1 CHAR UTF-8\n')
         file.write('1 GEDC\n')
-        file.write('2 VERS 5.5\n')
+        file.write('2 VERS 5.5.1\n')
         file.write('2 FORM LINEAGE-LINKED\n')
+        file.write('1 SOUR 0')
+        file.write('1 SUBM @SUBM@')
+        file.write('0 @SUBM@ SUBM')
+        file.write('1 NAME X')
         for fid in sorted(self.indi, key=lambda x: self.indi.__getitem__(x).num):
             self.indi[fid].print(file)
         for husb, wife in sorted(self.fam, key=lambda x: self.fam.__getitem__(x).num):
