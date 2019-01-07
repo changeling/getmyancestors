@@ -250,10 +250,10 @@ class Note:
         else:
             Note.counter += 1
             self.num = Note.counter
+        self.text = text.strip()
+
         if tree:
             tree.notes.append(self)
-
-        self.text = text.strip()
 
     def print(self, file=sys.stdout):
         file.write(cont('0 @N' + str(self.num) + '@ NOTE ' + self.text) + '\n')
