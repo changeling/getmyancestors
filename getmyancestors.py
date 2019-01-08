@@ -119,7 +119,7 @@ class Session:
         self.verbose = verbose
         self.logfile = logfile
         self.timeout = timeout
-        self.fid = self.lang = None
+        self.fid = self.lang = self.display_name = None
         self.counter = 0
         self.logged = self.login()
 
@@ -232,6 +232,7 @@ class Session:
         if data:
             self.fid = data['users'][0]['personId']
             self.lang = data['users'][0]['preferredLanguage']
+            self.display_name = data['users'][0]['displayName']
 
     def get_userid(self):
         if not self.fid:
@@ -874,10 +875,25 @@ class Tree:
         file.write('1 GEDC\n')
         file.write('2 VERS 5.5.1\n')
         file.write('2 FORM LINEAGE-LINKED\n')
-        file.write('1 SOUR 0')
-        file.write('1 SUBM @SUBM@')
-        file.write('0 @SUBM@ SUBM')
-        file.write('1 NAME X')
+        file.write('1 SOUR getmyancestors\n')
+        file.write('2 VERS 1.0placeholder\n')
+        file.write('2 NAME getmyancestors\n')
+        file.write('1 DEST getmyancestors\n')
+        file.write('1 DATE ' + time.strftime('%d %b %Y') + '\n')
+        file.write('2 TIME ' + time.strftime('%H:%M:%S') + '\n')
+        file.write('1 SUBM @SUBM@\n')
+        file.write('0 @SUBM@ SUBM\n')
+        file.write('1 NAME ' + self.fs.display_name + '\n')
+        # TODO: ISO-639 alpha-2 lang code ('en') from Family Search
+        # TODO: is not legal GEDCOM.
+        # TODO: Consider python module `iso-639` to handle conversion.
+        # TODO: file.write('1 LANG English\n')
+        # TODO: Example:
+        # TODO: from iso639 import languages
+        # TODO: ...
+        # TODO: file.write('1 LANG ' + languages.get(alpha2=self.fs.lang).name + '\n')
+        file.write('1 LANG ' + self.fs.lang + '\n')
+
         for fid in sorted(self.indi, key=lambda x: self.indi.__getitem__(x).num):
             self.indi[fid].print(file)
         for husb, wife in sorted(self.fam, key=lambda x: self.fam.__getitem__(x).num):
