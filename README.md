@@ -7,7 +7,7 @@ This program is now in production phase, but bugs might still be present. Featur
 
 The project is maintained at https://github.com/Linekio/getmyancestors. Visit here for the latest version and more information.
 
-This script requires python3, the requests module, and the num2words to work. To install the modules, run in your terminal:
+This script requires python3, the requests module, the num2words module and the babelfish module to work. To install the modules, run in your terminal:
 
 For requests:
 
@@ -16,6 +16,10 @@ For requests:
 For num2words:
 
 "python3 -m pip install num2words" (or "python3 -m pip install --user num2words" if you don't have admin rights on your machine).
+
+For babelfish:
+
+"python3 -m pip install babelfish" (or "python3 -m pip install --user babelfish" if you don't have admin rights on your machine).
 
 This script requires python 3.4 (or higher) to run due to some novel features in the argparse and asyncio modules (https://docs.python.org/3/whatsnew/3.4.html)
 
