@@ -7,6 +7,10 @@ This program is now in production phase, but bugs might still be present. Featur
 
 This script requires python3 and the requests module to work. To install this module on Linux, run in your terminal: "python3 -m pip install requests" (or "python3 -m pip install --user requests" if you don't have admin rights on your machine).
 
+For babelfish:
+
+"python3 -m pip install babelfish" (or "python3 -m pip install --user babelfish" if you don't have admin rights on your machine).
+
 This script requires python 3.4 (or higher) to run due to some novel features in the argparse and asyncio modules (https://docs.python.org/3/whatsnew/3.4.html)
 
 The graphical interface requires tkinter (https://docs.python.org/3/library/tkinter.html) and diskcache.
