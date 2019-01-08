@@ -5,7 +5,6 @@
 from tkinter import Tk, StringVar, IntVar, filedialog, messagebox, Menu, TclError, PhotoImage
 from tkinter.ttk import Frame, Label, Entry, Button, Checkbutton, Treeview, Notebook
 from threading import Thread
-from diskcache import Cache
 import time
 import tempfile
 import asyncio
@@ -14,8 +13,7 @@ import os
 import sys
 
 # local import
-from getmyancestors import Session, Tree, Indi, Fam
-from mergemyancestors import Gedcom
+from shared_classes import Session, Gedcom, Tree, Indi, Fam
 from translation import translations
 
 try:
@@ -23,6 +21,13 @@ try:
 except ImportError:
     sys.stderr.write('You need to install the num2words module first\n')
     sys.stderr.write('(run this in your terminal: "python3 -m pip install num2words" or "python3 -m pip install --user num2words")\n')
+    exit(2)
+
+try:
+    from diskcache import Cache
+except ImportError:
+    sys.stderr.write('You need to install the diskcache module first\n')
+    sys.stderr.write('(run this in your terminal: "python3 -m pip install diskcache" or "python3 -m pip install --user diskcache")\n')
     exit(2)
 
 tmp_dir = os.path.join(tempfile.gettempdir(), 'fstogedcom')
