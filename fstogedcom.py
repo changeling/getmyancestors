@@ -152,7 +152,7 @@ class Merge(Frame):
         warning = Label(
             self,
             font=('a', 7), wraplength=300, justify='center',
-            text=_('Warning: This tool should only be used to merge GEDCOM files from this software. If you use other GEDCOM files, the result is not guaranteed.'))
+            text=_('Warning: This tool should only be used to merge GEDCOM files from this software. If you use other GEDCOM files, the result is not guaranteed.')) # noqa
         self.files_to_merge = FilesToMerge(self)
         self.btn_add_file = Button(
             self,
@@ -240,7 +240,8 @@ class Merge(Frame):
                 tree.fam[(husb, wife)].facts = ged.fam[num].facts
                 tree.fam[(husb, wife)].notes = ged.fam[num].notes
                 tree.fam[(husb, wife)].sources = ged.fam[num].sources
-                tree.fam[(husb, wife)].sealing_spouse = ged.fam[num].sealing_spouse
+                tree.fam[(husb, wife)].sealing_spouse = \
+                    ged.fam[num].sealing_spouse
 
         # merge notes by text
         tree.notes = sorted(tree.notes, key=lambda x: x.text)
@@ -660,7 +661,9 @@ class Download(Frame):
             t = round(time.time() - self.start_time)
             minutes = t // 60
             seconds = t % 60
-            self.time.config(text=_('Elapsed time: %s:%s') % (minutes, '00%s'[len(str(seconds)):] % seconds))
+            self.time.config(
+                text=_('Elapsed time: %s:%s')
+                % (minutes, '00%s'[len(str(seconds)):] % seconds))
 
     def update_gui(self):
         while self.update_needed:
