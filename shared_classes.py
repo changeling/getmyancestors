@@ -6,11 +6,17 @@ import re
 try:
     import requests
 except ImportError:
-    sys.stderr.write('You need to install the requests module first\n')
-    sys.stderr.write('(run this in your terminal: "python3 -m pip install requests" or "python3 -m pip install --user requests")\n')
+    sys.stderr.write('You need to install the requests module first.\n')
+    sys.stderr.write('In your terminal, run:\n')
+    sys.stderr.write('python3 -m pip install requests\n')
+    sys.stderr.write('or:\n')
+    sys.stderr.write('python3 -m pip install --user requests')
     exit(2)
 
 # local import
+from constants import (
+    FACT_TAGS, FACT_EVEN, ORDINANCES_STATUS, FACT_TYPES, ORDINANCES,
+    MAX_PERSONS)
 from translation import translations
 
 
@@ -33,56 +39,6 @@ def cont(string):
         res.append(('\n%s CONC ' % level).join(to_conc))
         max_len = 248
     return ('\n%s CONT ' % level).join(res)
-
-
-def reversed_dict(d):
-    return {val: key for key, val in d.items()}
-
-
-MAX_PERSONS = 200  # is subject to change: see https://www.familysearch.org/developers/docs/api/tree/Persons_resource
-
-FACT_TAGS = {
-    'http://gedcomx.org/Birth': 'BIRT',
-    'http://gedcomx.org/Christening': 'CHR',
-    'http://gedcomx.org/Death': 'DEAT',
-    'http://gedcomx.org/Burial': 'BURI',
-    'http://gedcomx.org/PhysicalDescription': 'DSCR',
-    'http://gedcomx.org/Occupation': 'OCCU',
-    'http://gedcomx.org/MilitaryService': '_MILT',
-    'http://gedcomx.org/Marriage': 'MARR',
-    'http://gedcomx.org/Divorce': 'DIV',
-    'http://gedcomx.org/Annulment': 'ANUL',
-    'http://gedcomx.org/CommonLawMarriage': '_COML',
-    'http://gedcomx.org/BarMitzvah': 'BARM',
-    'http://gedcomx.org/BatMitzvah': 'BASM',
-    'http://gedcomx.org/Naturalization': 'NATU',
-    'http://gedcomx.org/Residence': 'RESI',
-    'http://gedcomx.org/Religion': 'RELI',
-    'http://familysearch.org/v1/TitleOfNobility': 'TITL',
-    'http://gedcomx.org/Cremation': 'CREM',
-    'http://gedcomx.org/Caste': 'CAST',
-    'http://gedcomx.org/Nationality': 'NATI',
-}
-
-FACT_EVEN = {
-    'http://gedcomx.org/Stillbirth': 'Stillborn',
-    'http://familysearch.org/v1/Affiliation': 'Affiliation',
-    'http://gedcomx.org/Clan': 'Clan Name',
-    'http://gedcomx.org/NationalId': 'National Identification',
-    'http://gedcomx.org/Ethnicity': 'Race',
-    'http://familysearch.org/v1/TribeName': 'Tribe Name'
-}
-
-ORDINANCES_STATUS = {
-    'http://familysearch.org/v1/Ready': 'QUALIFIED',
-    'http://familysearch.org/v1/Completed': 'COMPLETED',
-    'http://familysearch.org/v1/Cancelled': 'CANCELED',
-    'http://familysearch.org/v1/InProgress': 'SUBMITTED',
-    'http://familysearch.org/v1/NotNeeded': 'INFANT'
-}
-
-FACT_TYPES = reversed_dict(FACT_TAGS)
-ORDINANCES = reversed_dict(ORDINANCES_STATUS)
 
 
 # FamilySearch session class
