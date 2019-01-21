@@ -185,7 +185,7 @@ class Session:
 
         Arguments:
             url {[type]} -- [description]
-        
+
         Returns:
             [type] -- [description]
 
@@ -270,7 +270,7 @@ class Note:
     def __init__(self, text='', tree=None, num=None):
         """
         [summary].
-        
+
         Keyword Arguments:
             text {str} -- [description] (default: {''})
             tree {[type]} -- [description] (default: {None})
