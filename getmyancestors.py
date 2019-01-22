@@ -33,13 +33,6 @@ import re
 # Local import
 from shared_classes import Session, Tree
 
-try:
-    from num2words import num2words
-except ImportError:
-    sys.stderr.write('You need to install the num2words module first\n')
-    sys.stderr.write('(run this in your terminal: "python3 -m pip install num2words" or "python3 -m pip install --user num2words")\n')
-    exit(2)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Retrieve GEDCOM data from FamilySearch Tree (4 Jul 2016)', add_help=False, usage='getmyancestors.py -u username -p password [options]')
     parser.add_argument('-u', metavar='<STR>', type=str, help='FamilySearch username')
