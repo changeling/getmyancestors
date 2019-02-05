@@ -40,6 +40,13 @@ except ImportError:
     sys.stderr.write('(run this in your terminal: "python3 -m pip install requests" or "python3 -m pip install --user requests")\n')
     exit(2)
 
+try:
+    import babelfish
+except ImportError:
+    sys.stderr.write('You need to install the babelfish module first\n')
+    sys.stderr.write('(run this in your terminal: "python3 -m pip install babelfish" or "python3 -m pip install --user babelfish")\n')
+    exit(2)
+
 MAX_PERSONS = 200  # is subject to change: see https://www.familysearch.org/developers/docs/api/tree/Persons_resource
 
 FACT_TAGS = {
@@ -869,23 +876,14 @@ class Tree:
         file.write('2 VERS 5.5.1\n')
         file.write('2 FORM LINEAGE-LINKED\n')
         file.write('1 SOUR getmyancestors\n')
-        file.write('2 VERS 1.0placeholder\n')
+        file.write('2 VERS 1.0\n')
         file.write('2 NAME getmyancestors\n')
-        file.write('1 DEST getmyancestors\n')
         file.write('1 DATE ' + time.strftime('%d %b %Y') + '\n')
         file.write('2 TIME ' + time.strftime('%H:%M:%S') + '\n')
         file.write('1 SUBM @SUBM@\n')
         file.write('0 @SUBM@ SUBM\n')
         file.write('1 NAME ' + self.fs.display_name + '\n')
-        # TODO: ISO-639 alpha-2 lang code ('en') from Family Search
-        # TODO: is not legal GEDCOM.
-        # TODO: Consider python module `iso-639` to handle conversion.
-        # TODO: file.write('1 LANG English\n')
-        # TODO: Example:
-        # TODO: from iso639 import languages
-        # TODO: ...
-        # TODO: file.write('1 LANG ' + languages.get(alpha2=self.fs.lang).name + '\n')
-        file.write('1 LANG ' + self.fs.lang + '\n')
+        file.write('1 LANG ' + babelfish.Language.fromalpha2(self.fs.lang).name + '\n')
 
         for fid in sorted(self.indi, key=lambda x: self.indi.__getitem__(x).num):
             self.indi[fid].print(file)
